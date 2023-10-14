@@ -81,7 +81,7 @@ Citizen.CreateThread(function()
                     PromptSetActiveGroupThisFrame(prompts, label)
                     if Citizen.InvokeNative(0xC92AC953F0A982AE, talktonpc) then --if pressing the interaction-key
                         local playerPed = PlayerPedId()
-                        if v.type == "jobinteraction" then
+                        if v.type == "m_interaction" then
                             if IsPedMale(playerPed) then 
                                 VorpCore.NotifyBottomRight(Config.Language.invite, 3000)
                                 Citizen.Wait(4000)
@@ -100,9 +100,48 @@ Citizen.CreateThread(function()
                                 ClearPedTasks(playerPed)
                                 FreezeEntityPosition(playerPed,false)
                             else 
-                                VorpCore.NotifyBottomRight(Config.Language.reject, 6500) 
+                                VorpCore.NotifyBottomRight(Config.Language.reject_f, 6500) 
                             end
                             Citizen.Wait(1000)
+                        elseif v.type == "f_interaction" then
+                            if IsPedMale(playerPed) then 
+                                VorpCore.NotifyBottomRight(Config.Language.reject_m, 6500)
+                            else 
+                                VorpCore.NotifyBottomRight(Config.Language.invite, 3000)
+                                Citizen.Wait(4000)
+                                FreezeEntityPosition(playerPed,true)
+                                local originalPos = GetEntityCoords(playerPed)
+                                DoScreenFadeOut(1000)
+                                Citizen.Wait(1000)
+                                SetEntityCoords(playerPed, v.pos.x, v.pos.y, v.pos.z) --teleport into room
+                                Citizen.Wait(20000) --20 sec in room
+                                VorpCore.NotifyCenter(Config.Language.notify_1,6000)
+                                VorpCore.NotifyCenter(Config.Language.notify_2,6000)
+                                SetEntityCoords(playerPed, originalPos.x, originalPos.y, originalPos.z) --teleport back
+                                Citizen.Wait(2000)
+                                DoScreenFadeIn(1000)
+                                TriggerServerEvent('juSa_hooker:pay')
+                                ClearPedTasks(playerPed)
+                                FreezeEntityPosition(playerPed,false) 
+                            end
+                            Citizen.Wait(1000)
+                        elseif v.type == "b_interaction" then
+                            VorpCore.NotifyBottomRight(Config.Language.invite, 3000)
+                            Citizen.Wait(4000)
+                            FreezeEntityPosition(playerPed,true)
+                            local originalPos = GetEntityCoords(playerPed)
+                            DoScreenFadeOut(1000)
+                            Citizen.Wait(1000)
+                            SetEntityCoords(playerPed, v.pos.x, v.pos.y, v.pos.z) --teleport into room
+                            Citizen.Wait(20000) --20 sec in room
+                            VorpCore.NotifyCenter(Config.Language.notify_1,6000)
+                            VorpCore.NotifyCenter(Config.Language.notify_2,6000)
+                            SetEntityCoords(playerPed, originalPos.x, originalPos.y, originalPos.z) --teleport back
+                            Citizen.Wait(2000)
+                            DoScreenFadeIn(1000)
+                            TriggerServerEvent('juSa_hooker:pay')
+                            ClearPedTasks(playerPed)
+                            FreezeEntityPosition(playerPed,false) 
                         end
                         Wait(500)
                     end
